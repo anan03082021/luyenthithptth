@@ -6,16 +6,32 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UsersImport;
 
 class UserController extends Controller
 {
     // 1. Danh sách người dùng
-    public function index()
-    {
-        // Lấy danh sách user, sắp xếp mới nhất, phân trang 10 người/trang
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
-        return view('admin.users.index', compact('users'));
+// Thêm Request vào tham số của hàm index
+public function index(Request $request)
+{
+    $query = User::query();
+
+    // Xử lý tìm kiếm nếu có nhập từ khóa
+    if ($request->filled('search')) {
+        $search = trim($request->search);
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'LIKE', "%{$search}%")
+              ->orWhere('email', 'LIKE', "%{$search}%");
+        });
     }
+
+    // Sắp xếp mới nhất và phân trang
+    // appends(request()->all()) giúp giữ từ khóa tìm kiếm khi chuyển trang (trang 2, 3...)
+    $users = $query->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
+
+    return view('admin.users.index', compact('users'));
+}
 
     // 2. Lưu người dùng mới
     public function store(Request $request)
@@ -73,4 +89,18 @@ class UserController extends Controller
         User::destroy($id);
         return redirect()->route('admin.users.index')->with('success', 'Đã xóa tài khoản.');
     }
+
+    public function importExcel(Request $request) 
+{
+    $request->validate([
+        'file_excel' => 'required|mimes:xlsx,xls,csv|max:2048'
+    ]);
+
+    try {
+        Excel::import(new UsersImport, $request->file('file_excel'));
+        return back()->with('success', 'Đã nhập hàng loạt tài khoản thành công!');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Lỗi dữ liệu: ' . $e->getMessage());
+    }
+}
 }

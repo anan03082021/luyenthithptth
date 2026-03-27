@@ -1,4 +1,7 @@
-<x-layouts.shared title="Chỉnh sửa đề thi #{{ $exam->id }}">
+@php
+    $layout = (auth()->user()->role === 'admin') ? 'layouts.admin' : 'layouts.teacher';
+@endphp
+<x-dynamic-component :component="$layout" title="Chỉnh sửa đề thi #{{ $exam->id }}">
     @push('styles')
     <style>
         .card-header-custom { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; }
@@ -219,6 +222,7 @@
     </div>
 
     @push('scripts')
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
         function examEditor() {
@@ -301,4 +305,4 @@
         }
     </script>
     @endpush
-</x-layouts.shared>
+</x-dynamic-component>

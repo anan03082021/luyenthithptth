@@ -131,9 +131,12 @@
                                         <i class="bi bi-file-earmark-text"></i>
                                     </div>
                                     <div>
+                                        @php 
+                                            $routeEdit = (auth()->user()->role == 'admin') ? 'admin.exams.edit' : 'teacher.exams.edit'; 
+                                        @endphp
                                         {{-- Chỉ cho phép vào trang sửa nếu là đề của mình --}}
-                                        @if($exam->creator_id == auth()->id())
-                                            <a href="{{ route('teacher.exams.edit', $exam->id) }}" class="exam-title text-truncate" style="max-width: 350px;">
+                                        @if($exam->creator_id == auth()->id() || auth()->user()->role == 'admin')
+                                            <a href="{{ route($routeEdit, $exam->id) }}" class="exam-title text-truncate" style="max-width: 350px;">
                                                 {{ $exam->title }}
                                             </a>
                                         @else
@@ -194,9 +197,12 @@
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 p-1" style="min-width: 220px;">
+                                        @php 
+                                            $routeEdit = (auth()->user()->role == 'admin') ? 'admin.exams.edit' : 'teacher.exams.edit'; 
+                                        @endphp
 
                                         {{-- 2. CHỈ CHỦ SỞ HỮU CÓ QUYỀN: Sửa, Xóa, Xem kết quả --}}
-                                        @if($exam->creator_id == auth()->id())
+                                        @if($exam->creator_id == auth()->id() || auth()->user()->role == 'admin')
                                             <li><hr class="dropdown-divider my-1"></li>
                                             <li class="dropdown-header small text-uppercase fw-bold text-muted">Quản lý đề của tôi</li>
                                             <li>

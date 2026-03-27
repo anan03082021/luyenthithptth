@@ -21,4 +21,18 @@ class ForumController extends Controller
         ChatMessage::destroy($id);
         return redirect()->back()->with('success', 'Đã xóa tin nhắn vi phạm.');
     }
+
+    public function bulkDestroy(Request $request)
+{
+    $ids = $request->input('ids');
+
+    if (empty($ids)) {
+        return back()->with('error', 'Vui lòng chọn ít nhất một tin nhắn.');
+    }
+
+    // Xóa tất cả tin nhắn có ID trong mảng
+    \App\Models\ChatMessage::whereIn('id', $ids)->delete();
+
+    return back()->with('success', 'Đã xóa ' . count($ids) . ' tin nhắn thành công.');
+}
 }

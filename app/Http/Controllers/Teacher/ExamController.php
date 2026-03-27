@@ -135,7 +135,7 @@ class ExamController extends Controller
     public function results($id)
     {
         $exam = Exam::findOrFail($id);
-        if ($exam->user_id !== auth()->id()) {
+        if ($exam->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
             return redirect()->back()
                 ->with('error', 'Bạn chỉ có thể xem kết quả của các đề thi do chính mình tạo ra.');
         }
@@ -157,7 +157,7 @@ public function edit($id)
         'questions.topic' // Load thêm topic để lấy topic_name
     ])->findOrFail($id);
 
-    if ($exam->creator_id !== auth()->id()) {
+    if ($exam->creator_id !== auth()->id() && auth()->user()->role !== 'admin') {
         return redirect()->route('teacher.exams.index')
             ->with('error', 'Bạn không có quyền chỉnh sửa đề thi này.');
     }
@@ -268,7 +268,7 @@ public function edit($id)
             DB::beginTransaction();
             $exam = Exam::findOrFail($id);
 
-            if ($exam->creator_id !== auth()->id()) {
+            if ($exam->creator_id !== auth()->id() && auth()->user()->role !== 'admin') {
                 return redirect()->route('teacher.exams.index')
                     ->with('error', 'Bạn không có quyền chỉnh sửa đề thi này.');
             }
@@ -371,7 +371,7 @@ public function edit($id)
     public function destroy($id)
     {
         $exam = \App\Models\Exam::findOrFail($id);
-        if ($exam->creator_id !== auth()->id()) {
+        if ($exam->creator_id !== auth()->id() && auth()->user()->role !== 'admin') {
             return redirect()->back()
                 ->with('error', 'Bạn không có quyền xóa đề thi của giáo viên khác.');
         }

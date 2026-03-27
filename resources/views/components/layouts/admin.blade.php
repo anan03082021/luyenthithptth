@@ -10,22 +10,91 @@
     {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
-    <style>
-        body { background-color: #f3f4f6; font-family: 'Segoe UI', sans-serif; }
-        .navbar-admin {
-            background: linear-gradient(to right, #1f2937, #111827); /* Màu tối admin */
-        }
-        /* Style cho Link Menu */
-        .navbar-dark .navbar-nav .nav-link { color: rgba(255,255,255,0.75); font-weight: 500; padding: 0.5rem 1rem; }
-        .navbar-dark .navbar-nav .nav-link:hover, 
-        .navbar-dark .navbar-nav .nav-link.active { color: #fff; background-color: rgba(255,255,255,0.1); border-radius: 6px; }
-        
-        /* Style cho Dropdown menu con */
-        .dropdown-menu { border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 8px; margin-top: 10px; }
-        .dropdown-item { padding: 8px 16px; font-size: 0.95rem; }
-        .dropdown-item:hover { background-color: #f3f4f6; color: #2563eb; }
-        .dropdown-item i { width: 20px; text-align: center; margin-right: 8px; }
-    </style>
+<style>
+    /* --- STYLE CƠ BẢN --- */
+    body { background-color: #f3f4f6; font-family: 'Segoe UI', sans-serif; }
+    
+    .navbar-admin {
+        background: linear-gradient(to right, #1f2937, #111827); /* Màu tối admin */
+    }
+
+    /* --- STYLE LINK MENU --- */
+    .navbar-dark .navbar-nav .nav-link { 
+        color: rgba(255,255,255,0.75); 
+        font-weight: 500; 
+        padding: 0.5rem 1rem; 
+        transition: all 0.2s;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover, 
+    .navbar-dark .navbar-nav .nav-link.active { 
+        color: #fff; 
+        background-color: rgba(255,255,255,0.1); 
+        border-radius: 6px; 
+    }
+
+    /* --- DROPDOWN MENU (CÔNG TÁC CHUYÊN MÔN) --- */
+    .dropdown-menu { 
+        border: none; 
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); 
+        border-radius: 12px; 
+        margin-top: 10px; 
+        padding: 0.5rem;
+        animation: fadeInSlide 0.2s ease-out;
+    }
+
+    /* Đảm bảo bảng không cắt mất menu dropdown */
+.table-responsive {
+    overflow: visible !important;
+}
+
+/* Tăng mức độ hiển thị của Dropdown */
+.dropdown-menu {
+    z-index: 1050 !important;
+}
+
+/* Nếu bạn dùng card-main có overflow: hidden */
+.card-main, .card {
+    overflow: visible !important;
+}
+
+    /* Hiệu ứng trượt nhẹ khi mở menu chuyên môn */
+    @keyframes fadeInSlide {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item { 
+        padding: 10px 16px; 
+        font-size: 0.9rem; 
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.2s;
+        color: #4b5563;
+    }
+
+    .dropdown-item:hover { 
+        background-color: #f8fafc; 
+        color: #4f46e5; /* Màu indigo chủ đạo */
+        padding-left: 20px; /* Hiệu ứng dịch chuyển nhẹ khi hover */
+    }
+
+    .dropdown-item i { 
+        width: 24px; 
+        text-align: center; 
+        margin-right: 10px; 
+        font-size: 1.1rem;
+    }
+
+    /* Style riêng cho các icon trong menu chuyên môn của Admin */
+    .dropdown-item .bi-database-fill-add { color: #6366f1; }
+    .dropdown-item .bi-file-earmark-text-fill { color: #10b981; }
+    .dropdown-item .bi-calendar-event-fill { color: #f59e0b; }
+    .dropdown-item .bi-folder-fill { color: #06b6d4; }
+
+    /* Divider tinh tế hơn */
+    .dropdown-divider { border-top: 1px solid #f1f5f9; margin: 0.5rem 0; }
+</style>
     @stack('styles')
 </head>
 <body>

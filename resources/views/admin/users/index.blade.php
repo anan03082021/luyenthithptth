@@ -2,204 +2,242 @@
 
     @push('styles')
     <style>
-        /* --- STYLE HIỆN ĐẠI (CLEAN UI) --- */
-        :root { --primary-color: #4f46e5; --text-secondary: #64748b; }
+        /* --- NÂNG CẤP GIAO DIỆN QUẢN LÝ TÀI KHOẢN PRO --- */
+        :root { --primary-indigo: #4f46e5; }
 
-        /* Card Custom */
-        .card-custom {
-            border: none; border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);
+        /* Stat Group - 3 khối thống kê */
+        .stat-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .stat-bar-wrapper {
+            background: white; border-radius: 16px; padding: 0.75rem 1.25rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;
+            display: flex; align-items: center; min-width: 170px;
         }
-
-        /* Avatar User */
-        .user-avatar {
+        .stat-icon-box {
             width: 40px; height: 40px; border-radius: 10px;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: #475569; display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 1rem; margin-right: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem; margin-right: 12px;
         }
 
-        /* Badge Roles */
-        .badge-role { font-size: 0.75rem; padding: 0.4em 0.8em; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .role-admin   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; } /* Đỏ */
-        .role-teacher { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; } /* Xanh đậm */
-        .role-student { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; } /* Xám */
-
-        /* Table Styles */
-        .table-modern thead th {
-            background-color: #f8fafc; color: var(--text-secondary); font-weight: 700; font-size: 0.75rem;
-            text-transform: uppercase; padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0;
+        .card-main {
+            border: none; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+            background: white; overflow: hidden;
         }
-        .table-modern td { padding: 1rem 1.5rem; vertical-align: middle; color: #334155; }
+
+        /* Avatar & Badge */
+        .user-avatar-circle {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.95rem; margin-right: 15px;
+        }
+        .role-pill { 
+            font-size: 0.7rem; padding: 0.45rem 0.9rem; border-radius: 8px; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            display: inline-block; min-width: 95px; text-align: center;
+        }
+        .pill-admin   { background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; }
+        .pill-teacher { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+        .pill-student { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+
+        /* Nút hành động Modern */
+        .btn-modern {
+            padding: 0.5rem 0.9rem; border-radius: 10px; font-weight: 600; 
+            font-size: 0.8rem; transition: all 0.2s; border: 1px solid transparent;
+        }
+        .btn-edit-soft { background: #fdfaf6; color: #c2410c; border: 1px solid #ffedd5; }
+        .btn-edit-soft:hover { background: #ffedd5; border-color: #fb923c; }
+        .btn-delete-soft { background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; }
+        .btn-delete-soft:hover { background: #ffe4e6; border-color: #f43f5e; }
+
+        /* Khung tìm kiếm DÀI 500px */
+        .search-wrapper {
+            background: #f1f5f9; border-radius: 12px; padding: 4px;
+            display: flex; align-items: center; width: 500px; 
+            transition: 0.3s; border: 1px solid transparent;
+        }
+        .search-wrapper:focus-within { background: white; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); border: 1px solid #c7d2fe; }
+        .search-wrapper input { border: none; background: transparent; padding: 6px 15px; outline: none; width: 100%; font-size: 0.9rem; }
+        .search-wrapper button { 
+            border-radius: 9px; padding: 8px 25px; font-weight: 700; font-size: 0.85rem; 
+            white-space: nowrap; min-width: fit-content; flex-shrink: 0;
+        }
+
+        .bg-indigo-soft { background: #eef2ff; color: #4f46e5; }
+        .bg-blue-soft { background: #eff6ff; color: #2563eb; }
+        .bg-green-soft { background: #f0fdf4; color: #16a34a; }
     </style>
     @endpush
 
-    <div class="container-fluid px-4 mt-4">
+    <div class="container-fluid px-4 mt-4 mb-5">
         
-        {{-- THỐNG KÊ NHANH (Optional) --}}
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card card-custom p-3 d-flex flex-row align-items-center bg-white">
-                    <div class="p-3 bg-indigo-50 rounded-3 text-primary me-3"><i class="bi bi-people-fill fs-4"></i></div>
+        {{-- THÀNH PHẦN TRÊN CÙNG: 3 CỘT STATS & NÚT THÊM --}}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="stat-group">
+                <div class="stat-bar-wrapper">
+                    <div class="stat-icon-box bg-indigo-soft"><i class="bi bi-people-fill"></i></div>
                     <div>
-                        <h5 class="fw-bold mb-0">{{ $users->total() }}</h5>
-                        <small class="text-muted">Tổng tài khoản</small>
+                        <div class="lh-1 fw-bold text-dark fs-5">{{ number_format($users->total()) }}</div>
+                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 10px;">Người dùng</div>
+                    </div>
+                </div>
+                <div class="stat-bar-wrapper">
+                    <div class="stat-icon-box bg-blue-soft"><i class="bi bi-person-workspace"></i></div>
+                    <div>
+                        <div class="lh-1 fw-bold text-dark fs-5">{{ \App\Models\User::where('role', 'teacher')->count() }}</div>
+                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 10px;">Giáo viên</div>
+                    </div>
+                </div>
+                <div class="stat-bar-wrapper">
+                    <div class="stat-icon-box bg-green-soft"><i class="bi bi-mortarboard"></i></div>
+                    <div>
+                        <div class="lh-1 fw-bold text-dark fs-5">{{ \App\Models\User::where('role', 'student')->count() }}</div>
+                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 10px;">Học sinh</div>
                     </div>
                 </div>
             </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-success fw-bold px-4 py-2 rounded-3 d-flex align-items-center shadow-sm" onclick="document.getElementById('importFile').click()">
+                    <i class="bi bi-file-earmark-excel-fill me-2 fs-5"></i> Nhập Excel
+                </button>
+                <button class="btn btn-dark fw-bold px-4 py-2 rounded-3 shadow-sm d-flex align-items-center" onclick="openCreateModal()">
+                    <i class="bi bi-person-plus-fill me-2 fs-5"></i> Thêm mới
+                </button>
+            </div>
         </div>
 
-        <div class="card card-custom bg-white mb-4">
-            {{-- HEADER: TÌM KIẾM & NÚT THÊM --}}
-            <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fw-bold text-dark">Danh sách người dùng</h5>
-                
-                <div class="d-flex gap-2">
-                    <form method="GET" class="d-flex">
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
-                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Tìm tên/email..." value="{{ request('search') }}">
-                        </div>
-                    </form>
-                    
-                    {{-- Nút mở Modal Thêm mới --}}
-                    <button class="btn btn-primary fw-bold shadow-sm d-flex align-items-center" onclick="openCreateModal()">
-                        <i class="bi bi-plus-lg me-2"></i> Thêm mới
-                    </button>
+        {{-- Form ẩn để upload Excel --}}
+        <form action="{{ route('admin.users.import') }}" method="POST" enctype="multipart/form-data" id="importForm" style="display:none">
+            @csrf
+            <input type="file" name="file_excel" id="importFile" accept=".xlsx, .xls, .csv" onchange="document.getElementById('importForm').submit()">
+        </form>
+
+        <div class="card card-main">
+            {{-- HEADER: TIÊU ĐỀ & TÌM KIẾM DÀI --}}
+            <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1 fw-bold text-dark">Danh sách tài khoản</h5>
+                    <p class="text-muted small mb-0">Quản lý thông tin thành viên trong hệ thống.</p>
                 </div>
+                
+                <form action="{{ route('admin.users.index') }}" method="GET">
+                    <div class="search-wrapper shadow-sm">
+                        <i class="bi bi-search text-muted ms-2"></i>
+                        <input type="text" name="search" placeholder="Nhập tên hoặc địa chỉ email để tìm..." value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    </div>
+                </form>
             </div>
 
-            {{-- TABLE --}}
             <div class="table-responsive">
-                <table class="table table-hover align-middle table-modern mb-0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">Người dùng</th>
-                            <th>Vai trò</th>
-                            <th>Ngày tạo</th>
-                            <th class="text-end pe-4">Hành động</th>
+                            <th class="ps-4 border-0 py-3 text-muted small fw-bold">THÔNG TIN TÀI KHOẢN</th>
+                            <th class="border-0 py-3 text-muted small fw-bold text-center">VAI TRÒ</th>
+                            <th class="border-0 py-3 text-muted small fw-bold text-center">NGÀY ĐĂNG KÝ</th>
+                            <th class="text-end pe-4 border-0 py-3 text-muted small fw-bold">HÀNH ĐỘNG</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
+                        @forelse($users as $user)
                             <tr>
-                                <td class="ps-4">
+                                <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
-                                        <div class="user-avatar">
-                                            {{ substr($user->name, 0, 1) }}
+                                        <div class="user-avatar-circle">
+                                            {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <div class="fw-bold text-dark">{{ $user->name }}</div>
-                                            <div class="small text-muted">{{ $user->email }}</div>
+                                            <div class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">{{ $user->name }}</div>
+                                            <div class="text-muted" style="font-size: 0.8rem;">{{ $user->email }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @if($user->role == 'admin')
-                                        <span class="badge badge-role role-admin"><i class="bi bi-shield-lock-fill me-1"></i> Admin</span>
+                                        <span class="role-pill pill-admin">Admin</span>
                                     @elseif($user->role == 'teacher')
-                                        <span class="badge badge-role role-teacher"><i class="bi bi-person-video3 me-1"></i> Giáo viên</span>
+                                        <span class="role-pill pill-teacher">Giáo viên</span>
                                     @else
-                                        <span class="badge badge-role role-student"><i class="bi bi-backpack2-fill me-1"></i> Học sinh</span>
+                                        <span class="role-pill pill-student">Học sinh</span>
                                     @endif
                                 </td>
-                                <td class="text-muted small">
-                                    {{ $user->created_at->format('d/m/Y') }}
+                                <td class="text-center">
+                                    <div class="fw-bold text-dark small">{{ $user->created_at->format('d/m/Y') }}</div>
+                                    <div class="text-muted" style="font-size: 11px;">{{ $user->created_at->diffForHumans() }}</div>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <div class="dropdown">
-                                        <button class="btn btn-light btn-sm border rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown">
-                                            <i class="bi bi-three-dots-vertical text-secondary"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
-                                            {{-- Nút Sửa (Gọi JS) --}}
-                                            <li>
-                                                <button class="dropdown-item py-2" 
-                                                    onclick="openEditModal({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->role }}')">
-                                                    <i class="bi bi-pencil-square text-warning me-2"></i> Chỉnh sửa
-                                                </button>
-                                            </li>
-                                            
-                                            <li><hr class="dropdown-divider"></li>
-                                            
-                                            {{-- Nút Xóa --}}
-                                            <li>
-                                                @if(Auth::id() != $user->id)
-                                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Xóa tài khoản này sẽ mất toàn bộ dữ liệu liên quan. Bạn chắc chứ?');">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="dropdown-item py-2 text-danger">
-                                                            <i class="bi bi-trash me-2"></i> Xóa tài khoản
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <span class="dropdown-item text-muted disabled small">Không thể tự xóa</span>
-                                                @endif
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <button class="btn-modern btn-edit-soft me-1" 
+                                            onclick="openEditModal({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->role }}')">
+                                        <i class="bi bi-pencil-square me-1"></i> Sửa
+                                    </button>
+                                    @if(Auth::id() != $user->id)
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn-modern btn-delete-soft">
+                                                <i class="bi bi-trash me-1"></i> Xóa
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <i class="bi bi-search text-muted opacity-25" style="font-size: 3rem;"></i>
+                                    <p class="text-muted fw-bold mt-3">Không tìm thấy kết quả phù hợp</p>
+                                    <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Quay lại danh sách</a>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
-            {{-- PAGINATION --}}
-            @if($users->hasPages())
-                <div class="card-footer bg-white border-0 py-3 d-flex justify-content-center">
-                    {{ $users->links() }}
-                </div>
-            @endif
+            <div class="card-footer bg-white border-0 py-4 d-flex justify-content-center">
+                {{ $users->appends(request()->query())->links() }}
+            </div>
         </div>
     </div>
 
-    {{-- MODAL CHUNG (Dùng cho cả Thêm và Sửa) --}}
+    {{-- MODAL PHẲNG HIỆN ĐẠI --}}
     <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4">
-                <div class="modal-header bg-light border-bottom-0">
-                    <h5 class="modal-title fw-bold" id="modalTitle">Thêm tài khoản mới</h5>
+                <div class="modal-header border-0 p-4 pb-0">
+                    <h5 class="fw-bold text-dark" id="modalTitle">Tài khoản</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                
                 <form id="userForm" action="{{ route('admin.users.store') }}" method="POST">
                     @csrf
-                    <div id="methodField"></div> {{-- Nơi chứa @method('PUT') khi sửa --}}
-
+                    <div id="methodField"></div>
                     <div class="modal-body p-4">
-                        {{-- Tên --}}
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Họ và tên <span class="text-danger">*</span></label>
-                            <input type="text" name="name" id="userName" class="form-control" required>
+                            <label class="form-label small fw-bold">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="userName" class="form-control border-0 bg-light py-2" required>
                         </div>
-
-                        {{-- Email --}}
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Email đăng nhập <span class="text-danger">*</span></label>
-                            <input type="email" name="email" id="userEmail" class="form-control" required>
+                            <label class="form-label small fw-bold">Địa chỉ Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" id="userEmail" class="form-control border-0 bg-light py-2" required>
                         </div>
-
-                        {{-- Mật khẩu --}}
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Mật khẩu</label>
-                            <input type="password" name="password" class="form-control" placeholder="Để trống nếu không đổi">
-                            <div class="form-text text-muted small" id="passHelp">Mặc định nên đặt: 123456</div>
+                            <label class="form-label small fw-bold">Mật khẩu</label>
+                            <input type="password" name="password" class="form-control border-0 bg-light py-2">
+                            <div class="form-text small" id="passHelp"></div>
                         </div>
-
-                        {{-- Vai trò --}}
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Vai trò hệ thống</label>
-                            <select name="role" id="userRole" class="form-select bg-light" required>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Vai trò</label>
+                            <select name="role" id="userRole" class="form-select border-0 bg-light py-2">
                                 <option value="student">Học sinh</option>
                                 <option value="teacher">Giáo viên</option>
-                                <option value="admin">Quản trị viên (Admin)</option>
+                                <option value="admin">Quản trị viên</option>
                             </select>
                         </div>
                     </div>
-
-                    <div class="modal-footer border-top-0 pt-0 pe-4 pb-4">
-                        <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary fw-bold px-4">Lưu thông tin</button>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary fw-bold px-4 shadow-sm">Lưu dữ liệu</button>
                     </div>
                 </form>
             </div>
@@ -208,46 +246,27 @@
 
     @push('scripts')
     <script>
-        // Modal instance
         var userModal = new bootstrap.Modal(document.getElementById('userModal'));
-
         function openCreateModal() {
-            // Reset form về trạng thái Thêm mới
-            document.getElementById('modalTitle').innerText = 'Thêm tài khoản mới';
+            document.getElementById('modalTitle').innerText = 'Tạo tài khoản mới';
             document.getElementById('userForm').action = "{{ route('admin.users.store') }}";
-            document.getElementById('methodField').innerHTML = ''; // Xóa PUT
-            
-            document.getElementById('userName').value = '';
-            document.getElementById('userEmail').value = '';
-            document.getElementById('userEmail').readOnly = false; // Cho phép nhập email
-            document.getElementById('userRole').value = 'student';
-            document.getElementById('passHelp').innerText = 'Bắt buộc nhập khi tạo mới.';
-            
+            document.getElementById('methodField').innerHTML = '';
+            document.getElementById('userForm').reset();
+            document.getElementById('userEmail').readOnly = false;
+            document.getElementById('passHelp').innerText = 'Mật khẩu mặc định: 123456';
             userModal.show();
         }
-
         function openEditModal(id, name, email, role) {
-            // Chuyển form sang trạng thái Sửa
-            document.getElementById('modalTitle').innerText = 'Cập nhật tài khoản';
-            
-            // Cập nhật URL action (Laravel Route)
-            let url = "{{ route('admin.users.update', ':id') }}";
-            url = url.replace(':id', id);
-            document.getElementById('userForm').action = url;
-            
-            // Thêm method PUT
+            document.getElementById('modalTitle').innerText = 'Chỉnh sửa tài khoản';
+            document.getElementById('userForm').action = "{{ route('admin.users.update', ':id') }}".replace(':id', id);
             document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
-
-            // Điền dữ liệu cũ
             document.getElementById('userName').value = name;
             document.getElementById('userEmail').value = email;
-            document.getElementById('userEmail').readOnly = true; // Không cho sửa email (tránh lỗi duplicate)
+            document.getElementById('userEmail').readOnly = true;
             document.getElementById('userRole').value = role;
-            document.getElementById('passHelp').innerText = 'Chỉ nhập nếu muốn đổi mật khẩu mới.';
-
+            document.getElementById('passHelp').innerText = 'Để trống nếu không muốn đổi mật khẩu.';
             userModal.show();
         }
     </script>
     @endpush
-
 </x-layouts.admin>
